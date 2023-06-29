@@ -13,16 +13,15 @@ struct ParallelData {
 
       // TODO start: query number of MPI tasks and store it in
       // the size attribute of the class
+      MPI_Comm_size(MPI_COMM_WORLD, &size);
 
       // Query MPI rank of this task and store it in the rank attribute
       // Determine also up and down neighbours of this domain and store
       // them in nup and ndown attributes, remember to cope with
-      // boundary domains appropriatly
-
-      nup =
-      ndown =
-
-      // TODO end
+      // boundary domains appropriately
+      MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+      nup = (rank - 1 + size) % size;
+      ndown = (rank + 1) % size;
 
     };
 

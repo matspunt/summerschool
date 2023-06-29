@@ -9,10 +9,8 @@
 
 int main(int argc, char **argv)
 {
-
-  // TODO start: initialize MPI
-
-  // TODO end
+    // Initialize MPI
+    MPI_Init(&argc, &argv);
 
     const int image_interval = 100;    // Image output interval
 
@@ -35,14 +33,13 @@ int main(int argc, char **argv)
         std::cout << "Average temperature at start: " << average_temp << std::endl;
     }
 
-
     const double a = 0.5;     // Diffusion constant
     auto dx2 = current.dx * current.dx;
     auto dy2 = current.dy * current.dy;
     // Largest stable time step
     auto dt = dx2 * dy2 / (2.0 * a * (dx2 + dy2));
 
-    //Get the start time stamp
+    // Get the start time stamp
     auto start_clock = MPI_Wtime();
 
     // Time evolve
@@ -53,7 +50,7 @@ int main(int argc, char **argv)
             write_field(current, iter, parallelization);
         }
         // Swap current field so that it will be used
-        // as previous for next iteration step
+        // as previous for the next iteration step
         std::swap(current, previous);
     }
 
@@ -75,9 +72,8 @@ int main(int argc, char **argv)
     // Output the final field
     write_field(previous, nsteps, parallelization);
 
-  // TODO start: finalize MPI
-
-  // TODO end
+    // Finalize MPI
+    MPI_Finalize();
 
     return 0;
 }

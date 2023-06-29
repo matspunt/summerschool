@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     printf("Sender: %d. Sent elements: %d. Tag: %d. Receiver: %d\n",
            myid, size, myid + 1, destination);
     printf("Receiver: %d. first element %d.\n",
-           myid, receiveBuffer[0]);
+           myid, receiveBuffer[0])  ;
 
     // Finalize measuring the time and print it out
     t1 = MPI_Wtime();
