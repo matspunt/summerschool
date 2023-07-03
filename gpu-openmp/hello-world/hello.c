@@ -7,6 +7,7 @@
 int main()
 {
   int num_devices = omp_get_num_devices();
+  printf("Hello world from the GPU!\n");
   printf("Number of available devices %d\n", num_devices);
 
 #pragma omp target

@@ -1,7 +1,6 @@
-// TODO add declaration for target usage
+#pragma omp declare target
 double my_sum(double a, double b);
-
-// TODO end
+#pragma omp end declare target
 
 double my_sum(double a, double b)
 {

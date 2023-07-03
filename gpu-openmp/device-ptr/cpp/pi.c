@@ -42,38 +42,29 @@ float gpu_pi(size_t n)
 
     x = (float *)malloc(n * sizeof(float));
     y = (float *)malloc(n * sizeof(float));
-    
-    // TODO start: allocate x and y in the device with OpenMP enter data
 
-    // TODO end
+    #pragma omp target enter data map(alloc:x[0:n], y[0:n])
 
     inside = 0;
 
     istat = hiprandCreateGenerator(&g, HIPRAND_RNG_PSEUDO_DEFAULT);
 
-    // TODO start: use device pointer for HIP random generator calls
+    #pragma omp target data use_device_ptr(x, y)
+    {
+        istat = hiprandGenerateUniform(g, x, n);
+        if (istat != HIPRAND_STATUS_SUCCESS) printf("Error in hiprandGenerate: %d\n", istat);
+        istat = hiprandGenerateUniform(g, y, n);
+        if (istat != HIPRAND_STATUS_SUCCESS) printf("Error in hiprandGenerate: %d\n", istat);
+    }
 
-    istat = hiprandGenerateUniform(g, x, n);
-    if (istat != HIPRAND_STATUS_SUCCESS) printf("Error in hiprandGenerate: %d\n", istat);
-    istat = hiprandGenerateUniform(g, y, n);
-    if (istat != HIPRAND_STATUS_SUCCESS) printf("Error in hiprandGenerate: %d\n", istat);
-    
-    // TODO end
-
-
-    // TODO start: execute the loop in parallel in device
-
+    #pragma omp target teams distribute parallel for reduction(+:inside)
         for (int i = 0; i < n; i++) {
             if (x[i]*x[i] + y[i]*y[i] < 1.0) {
                 inside++;
             }
         }
-    
-    // TODO end
 
-    // TODO start: deallocate x and y in the device with OpenMP exit data
-
-    // TODO end
+    #pragma omp target exit data map(delete:x[0:n], y[0:n])
 
     free(x);
     free(y);
